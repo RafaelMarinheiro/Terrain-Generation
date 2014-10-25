@@ -1,4 +1,5 @@
 # Maze Prototype
+![A Maze](https://raw.githubusercontent.com/lucilley/Graphics-Practicum/master/prototype/img/aMAZE.png)
 
 ## Dependencies
 
