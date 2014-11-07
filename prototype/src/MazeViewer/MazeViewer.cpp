@@ -2,7 +2,7 @@
 * @Author: Rafael Marinheiro
 * @Date:   2014-10-18 22:50:16
 * @Last Modified by:   Rafael Marinheiro
-* @Last Modified time: 2014-10-25 05:28:27
+* @Last Modified time: 2014-11-06 20:29:12
 */
 
 #include "MazeViewer.hpp"
@@ -12,6 +12,7 @@
 namespace amaze{
 	MazeViewer::MazeViewer(amaze::Maze * maze, QWidget *parent) :
 		QGLWidget(parent), m_fullscreen(false), m_maze(maze){
+		m_player.x = 0, m_player.y = 0;
 		this->setWindowTitle("MazeViewer");
 	}
 
@@ -110,10 +111,12 @@ namespace amaze{
 					glEnd();
 				}
 
-
-				glBegin(GL_POINTS);				// Drawing Using Triangles
-					glVertex3f( 0.0f, 0.0f, 0.0f);		// Top
-				glEnd();	
+				if(m_player.x == x && m_player.y == y){
+					glColor3d(1.0, 1.0, 1.0);
+					glBegin(GL_POINTS);				// Drawing Using Triangles
+						glVertex3f( 0.0f, 0.0f, 0.0f);		// Top
+					glEnd();
+				}	
 				glTranslatef(grid_x, 0.0, 0.0);
 			}
 			glTranslatef(-1.0, grid_y, 0.0);
@@ -139,6 +142,26 @@ namespace amaze{
 
 	void MazeViewer::keyPressEvent(QKeyEvent *event){
 		switch(event->key()){
+			case Qt::Key_Up:
+				this->m_maze->moveNode(m_player, amaze::Maze::UP);
+				printf("%d %d\n", m_player.x, m_player.y);
+				updateGL();
+				break;
+			case Qt::Key_Down:
+				this->m_maze->moveNode(m_player, amaze::Maze::DOWN);
+				printf("%d %d\n", m_player.x, m_player.y);
+				updateGL();
+				break;
+			case Qt::Key_Left:
+				this->m_maze->moveNode(m_player, amaze::Maze::LEFT);
+				printf("%d %d\n", m_player.x, m_player.y);
+				updateGL();
+				break;
+			case Qt::Key_Right:
+				this->m_maze->moveNode(m_player, amaze::Maze::RIGHT);
+				printf("%d %d\n", m_player.x, m_player.y);
+				updateGL();
+				break;
 			case Qt::Key_F2:{
 				m_fullscreen = !m_fullscreen;
 				if(m_fullscreen){

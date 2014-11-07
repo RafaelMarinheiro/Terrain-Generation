@@ -2,7 +2,7 @@
 * @Author: Rafael Marinheiro
 * @Date:   2014-10-24 21:28:00
 * @Last Modified by:   Rafael Marinheiro
-* @Last Modified time: 2014-10-25 01:32:08
+* @Last Modified time: 2014-11-06 20:21:05
 */
 
 #ifndef MAZE_BUILDER_HPP
@@ -16,7 +16,7 @@ namespace amaze{
 	class MazeBuilder{
 	public:
 		MazeBuilder();
-		~MazeBuilder();
+		virtual ~MazeBuilder();
 
 		virtual Maze * buildMaze(unsigned int size_x, unsigned int size_y) = 0;
 

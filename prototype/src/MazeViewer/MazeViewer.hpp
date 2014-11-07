@@ -2,7 +2,7 @@
 * @Author: Rafael Marinheiro
 * @Date:   2014-10-18 22:50:47
 * @Last Modified by:   Rafael Marinheiro
-* @Last Modified time: 2014-10-25 04:40:38
+* @Last Modified time: 2014-10-25 15:34:35
 */
 
 #ifndef MAZE_VIEWER_H
@@ -38,6 +38,7 @@ namespace amaze{
 	private:
 		bool m_fullscreen;
 		amaze::Maze * m_maze;
+		amaze::Maze::MazeNode m_player;
 	};
 }
 

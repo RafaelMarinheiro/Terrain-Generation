@@ -1,29 +1,28 @@
 /* 
 * @Author: Rafael Marinheiro
-* @Date:   2014-10-18 22:58:16
+* @Date:   2014-11-07 05:18:02
 * @Last Modified by:   Rafael Marinheiro
-* @Last Modified time: 2014-11-06 20:23:23
+* @Last Modified time: 2014-11-07 06:37:49
 */
-#include "MazeViewer.hpp"
+
+#include "TerrainViewer.hpp"
 #include <qapplication.h>
 #include <cstdio>
 
-#include <Maze/builders/all.hpp>
-#include <Maze/carvers/all.hpp>
+#include <Terrain/builders/all.hpp>
 
 int main(int argc, char** argv)
 {
 	
-	amaze::MazeBuilder * builder = new amaze::DepthFirstMazeBuilder();
-	builder->setCarver(new amaze::LoggedMazeCarver());
-
-	amaze::Maze * maze = builder->buildMaze(50, 50);
+	amaze::HeightMapBuilder * builder = new amaze::DiamondSquareHeightMapBuilder(0.2);
+	
+	amaze::HeightMap * heightMap = builder->buildHeightMap(1000.0, 1000.0, 513, 513);
 
 	// Read command lines arguments.
 	QApplication application(argc,argv);
 		
 	// Instantiate the viewer.
-	amaze::MazeViewer viewer(maze);
+	TerrainViewer viewer(heightMap);
 
 	// Make the viewer window visible on screen.
 	viewer.show();

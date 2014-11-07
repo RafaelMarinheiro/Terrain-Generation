@@ -2,7 +2,7 @@
 * @Author: Rafael Marinheiro
 * @Date:   2014-10-24 20:03:00
 * @Last Modified by:   Rafael Marinheiro
-* @Last Modified time: 2014-10-25 02:23:49
+* @Last Modified time: 2014-11-06 20:28:28
 */
 
 #ifndef MAZE_HPP
@@ -47,7 +47,7 @@ namespace amaze{
 		unsigned int getSizeX();
 		unsigned int getSizeY();
 		bool getNeighborNode(Maze::MazeNode & node, const Maze::MazeDirection & direction);
-
+		bool moveNode(Maze::MazeNode & node, const Maze::MazeDirection & direction);
 	private:
 		unsigned int m_size_x;
 		unsigned int m_size_y;

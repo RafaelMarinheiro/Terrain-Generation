@@ -2,7 +2,7 @@
 * @Author: Rafael Marinheiro
 * @Date:   2014-10-24 20:26:40
 * @Last Modified by:   Rafael Marinheiro
-* @Last Modified time: 2014-10-25 05:08:30
+* @Last Modified time: 2014-11-06 20:29:27
 */
 
 #include <assert.h>
@@ -53,6 +53,32 @@ namespace amaze{
 			}
 		} else{
 			if(node.x > 0){
+				node.x--;
+				return true;
+			}
+		}
+		return false;
+	}
+
+	bool Maze::moveNode(Maze::MazeNode & node, const Maze::MazeDirection & direction){
+		MazeNodeData data = getDataAt(node);
+		if(direction == UP){
+			if(node.y + 1 < m_size_y && data.up){
+				node.y++;
+				return true;
+			}
+		} else if(direction == DOWN){
+			if(node.y > 0 && data.down){
+				node.y--;
+				return true;
+			}
+		} else if(direction == RIGHT){
+			if(node.x + 1 < m_size_x && data.right){
+				node.x++;
+				return true;
+			}
+		} else{
+			if(node.x > 0 && data.left){
 				node.x--;
 				return true;
 			}

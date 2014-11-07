@@ -13,6 +13,12 @@ file(GLOB_RECURSE Maze_SRC
 	"Common/Maze/*.cpp"
 )
 
+file(GLOB_RECURSE Terrain_SRC
+	"Common/Terrain/*.hpp"
+	"Common/Terrain/*.cpp"
+)
+
 if (BUILD_MAZE)
 	add_subdirectory(MazeViewer)
+	add_subdirectory(TerrainViewer)
 endif()
