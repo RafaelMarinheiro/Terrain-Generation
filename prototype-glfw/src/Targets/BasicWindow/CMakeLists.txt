@@ -9,7 +9,12 @@ find_package(GLEW REQUIRED)
 
 add_executable(BasicWindow
 				main.cpp
-				${COMMON_CORE_SRC})
+				${COMMON_CORE_SRC}
+				${COMMON_TERRAIN_SRC}
+				${COMMON_OCEAN_SRC}
+				${COMMON_ATMOSPHERE_SRC})
+
+message(STATUS "HEYHO ${COMMON_ATMOSPHERE_SRC}")
 
 add_dependencies(BasicWindow Copy_Code_Resources)
 

@@ -33,6 +33,6 @@ endif()
 # cause another cmake executable to run. The same process will walk through
 # the project's entire directory structure.
 
-add_definitions(-DGLFW_INCLUDE_GLCOREARB)
+# add_definitions(-DGLFW_INCLUDE_GLCOREARB)
 
 add_subdirectory(src)

@@ -2,7 +2,7 @@
 * @Author: Rafael Marinheiro
 * @Date:   2014-11-14 15:01:16
 * @Last Modified by:   Rafael Marinheiro
-* @Last Modified time: 2014-11-14 17:40:02
+* @Last Modified time: 2014-11-19 14:30:36
 */
 
 #ifndef CORE_WINDOW_H
@@ -23,6 +23,8 @@ namespace amaze{
 			bool shouldClose();
 
 			void swapBuffers();
+
+			GLFWwindow * getWindow() const{return _glfw_window;}
 		private:
 			GLFWwindow * _glfw_window; 
 		};

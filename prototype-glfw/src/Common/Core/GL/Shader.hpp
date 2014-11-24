@@ -2,7 +2,7 @@
 * @Author: Rafael Marinheiro
 * @Date:   2014-11-14 17:18:09
 * @Last Modified by:   Rafael Marinheiro
-* @Last Modified time: 2014-11-14 17:40:58
+* @Last Modified time: 2014-11-19 03:22:08
 */
 
 #ifndef CORE_SHADER_HPP
@@ -12,20 +12,19 @@
 
 #include <string>
 #include <map>
+#include <vector>
 
 namespace amaze{
 	namespace gl{
 		class Shader{
 		public:
-			enum ShaderType {VERTEX_SHADER, FRAGMENT_SHADER, GEOMETRY_SHADER};
-			static ShaderType fromGLShaderType(GLenum glshader);
-			static GLenum toGLShaderType(ShaderType shader);
-
 			Shader(void);
 			~Shader(void);
-			void loadFromString(Shader::ShaderType whichShader, const std::string& source);
-			void loadFromFile(Shader::ShaderType whichShader, const std::string& filename);
-			void createAndLinkProgram();
+
+			bool loadFromString(const std::string & strings, bool use_geo=false);
+			bool loadFromStrings(const std::vector<std::string> & strings, bool use_geo=false);
+			bool loadFromFiles(const std::vector<std::string> & files, bool use_geo=false);
+
 			void use();
 			void unUse();
 			void addAttribute(const std::string& attribute);
@@ -34,13 +33,9 @@ namespace amaze{
 			//An indexer that returns the location of the attribute/uniform
 			GLuint operator[](const std::string& attribute);
 			GLuint operator()(const std::string& uniform);
-			//Program deletion
-			void deleteProgram() {glDeleteProgram(_program);_program=-1;}
 
 		private:
 			GLuint	_program;
-			int _totalShaders;
-			GLuint _shaders[3];//0->vertexshader, 1->fragmentshader, 2->geometryshader
 			std::map<std::string,GLuint> _attributeList;
 			std::map<std::string,GLuint> _uniformLocationList;
 		};	

@@ -1,3 +1,11 @@
 add_subdirectory(Core)
 set(COMMON_CORE_SRC ${COMMON_CORE_SRC} PARENT_SCOPE)
 
+add_subdirectory(Terrain)
+set(COMMON_TERRAIN_SRC ${COMMON_TERRAIN_SRC} PARENT_SCOPE)
+
+add_subdirectory(Ocean)
+set(COMMON_OCEAN_SRC ${COMMON_OCEAN_SRC} PARENT_SCOPE)
+
+add_subdirectory(Atmosphere)
+set(COMMON_ATMOSPHERE_SRC ${COMMON_ATMOSPHERE_SRC} PARENT_SCOPE)

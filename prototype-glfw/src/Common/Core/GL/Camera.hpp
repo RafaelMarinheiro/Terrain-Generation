@@ -2,7 +2,7 @@
 * @Author: Rafael Marinheiro
 * @Date:   2014-11-14 16:44:53
 * @Last Modified by:   Rafael Marinheiro
-* @Last Modified time: 2014-11-14 17:16:24
+* @Last Modified time: 2014-11-19 16:02:10
 */
 
 #ifndef CORE_GL_CAMERA_HPP
@@ -16,7 +16,7 @@ namespace amaze{
 		public:
 			Camera();
 			Camera(const glm::vec3 & position, const glm::vec3& target, const glm::vec3& up,
-				   float fovY=acos(-1)/4, float aspect=4.0/3.0, float near=1, float far=100.0);
+				   float fovY=acos(-1)/4, float aspect=4.0/3.0, float near=0.1, float far=200.0);
 			
 			glm::vec3 position;
 			glm::vec3 direction;
