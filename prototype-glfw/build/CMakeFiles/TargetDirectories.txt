@@ -1,0 +1,2 @@
+/home/rf356/Desktop/Code/Terrain-Generation/prototype-glfw/build/src/Targets/BasicWindow/CMakeFiles/BasicWindow.dir
+/home/rf356/Desktop/Code/Terrain-Generation/prototype-glfw/build/src/Resources/CMakeFiles/Copy_Code_Resources.dir
