@@ -17,7 +17,7 @@ namespace amaze{
 		virtual ~HeightMapBuilder();
 
 		virtual HeightMap * buildHeightMap(float x_size, float y_size, unsigned int x_resolution, unsigned int y_resolution) = 0;
-
+	
 	protected:
 		void setHeightAt(HeightMap * heightMap, unsigned int x, unsigned int y, float height);
 
