@@ -47,6 +47,6 @@ vec3 colorForPosition(float h){
 		wPosition = daposition;
 		wNormal = normalize(normal);
 		albedo = colorForPosition(height);
-		material = vec3(1.0, 0.0, 0.0);
+		material = vec3(1.0, 1.0, 0.0);
 	}
 #endif

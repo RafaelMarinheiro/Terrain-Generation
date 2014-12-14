@@ -122,6 +122,7 @@ int main()
 
 	renderer.geometryNodes.push_back(&heightMapNode);
 	renderer.lightNodes.push_back(&atmosphereNode);
+	renderer.lightNodes.push_back(&oceanNode);
 	// renderer.postProcessingNodes.push_back(&oceanNode);
 	// ----------------------------- RESOURCES ----------------------------- //
 
