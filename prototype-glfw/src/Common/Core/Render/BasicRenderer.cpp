@@ -1,8 +1,8 @@
 /* 
 * @Author: Rafael Marinheiro
 * @Date:   2014-11-20 04:49:22
-* @Last Modified by:   Rafael Marinheiro
-* @Last Modified time: 2014-11-23 03:25:10
+* @Last Modified by:   marinheiro
+* @Last Modified time: 2014-12-13 19:58:06
 */
 
 #include <Core/Render/BasicRenderer.hpp>
