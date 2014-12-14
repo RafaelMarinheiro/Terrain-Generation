@@ -17,6 +17,9 @@
 
 #include <Ocean/OceanNode.hpp>
 
+#include <TreeGeom/builders/FractalTreeBuilder.hpp>
+#include <TreeGeom/TreeNode.hpp>
+
 #include <vector>
 #include <string>
 #include <iostream>
@@ -120,8 +123,19 @@ int main()
 	AtmosphereNode atmosphereNode;
 	atmosphereNode.init();
 
-	renderer.geometryNodes.push_back(&heightMapNode);
+	// renderer.geometryNodes.push_back(&heightMapNode);
+
+	TreeBuilder * tbuilder = new FractalTreeBuilder();
+	Tree * tree = tbuilder->generateTree(6, 20, 
+			16.7, -33.3, 0.85, 0.85, 2, 0, 0);
+
+	TreeNode treeNode;
+	treeNode.init(tree);
+
+	renderer.geometryNodes.push_back(&treeNode);
+
 	renderer.lightNodes.push_back(&atmosphereNode);
+	// renderer.lightNodes.push_back(&oceanNode);
 	// renderer.postProcessingNodes.push_back(&oceanNode);
 	// ----------------------------- RESOURCES ----------------------------- //
 
@@ -164,6 +178,8 @@ int main()
 			}
 			lag -= fps;
 		}
+
+		// viewer.camera.lookAt(glm::vec3(0.0, 0.0, 0.0));
 
 		glm::vec3 sunDirection = sunController.getSunDirection();
 

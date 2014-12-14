@@ -24,7 +24,11 @@ namespace amaze{
 	
 	private:
 		float height;
-
+		int numberWaves;
+		float _amplitudes[8];
+		float _wavelength[8];
+		float _speed[8];
+		float _direction[16];
 		GLuint vao;
 		GLuint vbo;
 		gl::Shader materialShader;
