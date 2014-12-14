@@ -12,7 +12,8 @@ namespace amaze{
 			return;
 		}
 		int leftI = index*2;
-		int rightI = left + 1;
+
+		int rightI = leftI + 1;
 
 		glm::vec3 curr = tree->branchNodes[index];
 		glm::vec3 parent = tree->branchNodes[index/2];
@@ -23,13 +24,15 @@ namespace amaze{
 		float v = axis.z;
 		float L = glm::length(axis);
 
-		float denom = math::sqrt(u*u + v*v);
 
-		float cosTheta = math::cos(tree->theta);
-		float sinTheta = math::sin(tree->theta);
+		float denom = sqrt(u*u + v*v);
 
-		float cosPhi = math::cos(tree->phi);
-		float sinPhi = math::sin(tree->phi);
+		float cosTheta = cos(tree->theta);
+		float sinTheta = sin(tree->theta);
+
+		float cosPhi = cos(tree->phi);
+		float sinPhi = sin(tree->phi);
+ 
 
 		float x1 = curr.x + tree->R1*(u*cosTheta - (L*v*sinTheta/denom));
 		float z1 = curr.z + tree->R1*(v*cosTheta - (L*u*sinTheta/denom));
@@ -37,7 +40,8 @@ namespace amaze{
 
 		float x2 = curr.x + tree->R2*(u*cosPhi - (L*v*sinPhi/denom));
 		float z2 = curr.z + tree->R2*(v*cosPhi - (L*u*sinPhi/denom));
-		float y1 = curr.y + tree->R2*w*cosPhi;
+
+		float y2 = curr.y + tree->R2*w*cosPhi;
 
 
 		glm::vec3 left = glm::vec3(x1,y1,z1);

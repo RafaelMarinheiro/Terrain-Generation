@@ -12,7 +12,8 @@ namespace amaze{
 
 	Tree * TreeBuilder::generateTree(unsigned int maxDepth, float _trunkLength, 
 			float _theta, float _phi, float r1, float r2, float _radius, float x, float y){
-		Tree * tree = new Tree(maxDepth, _trunkLength, _theta, _phi, _r1, _r2, _radius);
+
+		Tree * tree = new Tree(maxDepth, _trunkLength, _theta, _phi, r1, r2, _radius);
 		makeBranches(tree,x,y);
 		return tree;
 	}

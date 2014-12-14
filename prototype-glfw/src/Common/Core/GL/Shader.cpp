@@ -1,8 +1,8 @@
 /* 
 * @Author: Rafael Marinheiro
 * @Date:   2014-11-14 17:20:32
-* @Last Modified by:   Rafael Marinheiro
-* @Last Modified time: 2014-11-23 01:25:01
+* @Last Modified by:   Rafael Farias Marinheiro
+* @Last Modified time: 2014-11-24 15:34:20
 */
 
 #include <Core/GL/Shader.hpp>
@@ -11,6 +11,7 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
+#include <iterator>
 
 using namespace std;
 

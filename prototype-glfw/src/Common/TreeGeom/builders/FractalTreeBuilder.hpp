@@ -8,9 +8,10 @@
 
 namespace amaze{
 
-	class FractalTreeBuilder : protected TreeBuilder{
+
+	class FractalTreeBuilder : public TreeBuilder{
 	public:
-		FractalTreeBuilder();
+		FractalTreeBuilder(){}
 	protected:
 		virtual void recursiveBranch(Tree * tree, int index, int depth);
 
