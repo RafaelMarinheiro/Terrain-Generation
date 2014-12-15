@@ -17,6 +17,9 @@
 
 #include <Ocean/OceanNode.hpp>
 
+#include <TreeGeom/builders/FractalTreeBuilder.hpp>
+#include <TreeGeom/TreeNode.hpp>
+
 #include <vector>
 #include <string>
 #include <iostream>
@@ -126,6 +129,24 @@ int main()
 
 	renderer.lightNodes.push_back(&atmosphereNode);
 	renderer.lightNodes.push_back(&oceanNode);
+
+	TreeBuilder * tbuilder = new FractalTreeBuilder();
+	Tree * tree = tbuilder->generateTree(7, 0.3, 
+			.27, -0.59, 0.9, 0.8, 0.03, 0, 0);
+
+	TreeNode treeNode;
+	treeNode.init(tree, &heightMapNode);
+
+	for(int i = 0; i < 100; i+= 5){
+		for(int j = 0; j < 100; j+= 5){
+			render::TransformationNode * traslateNode = new render::TransformationNode();
+			traslateNode->transformation = glm::translate(glm::mat4(1.0f), glm::vec3(i+0.0f, 0.0f, j+0.0f));
+			traslateNode->child = &treeNode;
+			renderer.geometryNodes.push_back(traslateNode);
+		}
+	}
+
+	// renderer.geometryNodes.push_back(&treeNode);
 
 	// renderer.postProcessingNodes.push_back(&oceanNode);
 	// ----------------------------- RESOURCES ----------------------------- //

@@ -8,7 +8,7 @@
 #ifndef CORE_AMAZE_OPENGL_H
 #define CORE_AMAZE_OPENGL_H
 
-#define GLFW_INCLUDE_GLCOREARB
+// #define GLFW_INCLUDE_GLCOREARB
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>

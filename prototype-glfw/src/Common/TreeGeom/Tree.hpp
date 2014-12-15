@@ -9,7 +9,7 @@
 namespace amaze{
 
 	class Tree{
-		friend class TreeBuilder;
+
 
 	public: 
 		Tree(unsigned int maxDepth, float _trunkLength, float _theta, float _phi, float r1, float r2, float _radius);
@@ -17,8 +17,9 @@ namespace amaze{
 
 		glm::vec3 * getTreeData();
 
-	private:
-		unsigned int MAXDEPTH;
+
+	
+		unsigned int MAXDEPTH, numNodes;
 		float trunkLength, theta, phi, R1, R2, radius;
 		glm::vec3 * branchNodes;
 	};

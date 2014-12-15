@@ -1,8 +1,8 @@
 /* 
 * @Author: Rafael Marinheiro
 * @Date:   2014-11-07 04:16:40
-* @Last Modified by:   Rafael Marinheiro
-* @Last Modified time: 2014-11-19 03:38:38
+* @Last Modified by:   marinheiro
+* @Last Modified time: 2014-12-14 20:59:06
 */
 
 #include <Terrain/HeightMap.hpp>
@@ -25,7 +25,7 @@ namespace amaze{
 
 	// float HeightMap::getHeightAt(float x, float y){
 	// 	float dx = getSizeX()/getResolutionX();
-	// 	float dy
+	// 	float dy = getSizeY()/getResolutionY();
 	// }
 
 	float HeightMap::getHeightAt(unsigned int x, unsigned int y){
