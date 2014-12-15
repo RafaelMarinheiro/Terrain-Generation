@@ -2,7 +2,7 @@
 * @Author: Rafael Marinheiro
 * @Date:   2014-11-20 05:54:33
 * @Last Modified by:   marinheiro
-* @Last Modified time: 2014-12-14 09:57:53
+* @Last Modified time: 2014-12-15 00:10:21
 */
 
 #include <Ocean/OceanNode.hpp>
@@ -31,6 +31,7 @@ namespace amaze{
 		{
 			std::vector<std::string> files;
 			files.push_back(core::Resources::pathForResource("Shaders/Common.glsl"));
+			files.push_back(core::Resources::pathForResource("Shaders/Lighting/OrenNayar.glsl"));
 			files.push_back(core::Resources::pathForResource("Shaders/Atmosphere/SkyMap.glsl"));
 			files.push_back(core::Resources::pathForResource("Shaders/Util/Noise2D.glsl"));
 			files.push_back(core::Resources::pathForResource("Shaders/Water/Water.main.glsl"));

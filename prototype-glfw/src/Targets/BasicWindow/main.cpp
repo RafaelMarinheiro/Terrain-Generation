@@ -19,10 +19,13 @@
 
 #include <TreeGeom/builders/FractalTreeBuilder.hpp>
 #include <TreeGeom/TreeNode.hpp>
+#include <Cloud/CloudNode.hpp>
 
 #include <vector>
 #include <string>
 #include <iostream>
+
+#include <random>
 
 using namespace amaze;
 
@@ -124,15 +127,20 @@ int main()
 	atmosphereNode.init();
 
 
+	CloudNode cloudNode;
+	cloudNode.init();
+
 	renderer.geometryNodes.push_back(&heightMapNode);
 
 	renderer.skyNodes.push_back(&atmosphereNode);
+	renderer.skyNodes.push_back(&cloudNode);
 
 	renderer.lightNodes.push_back(&atmosphereNode);
 	renderer.lightNodes.push_back(&oceanNode);
 
 
 	TreeBuilder * tbuilder = new FractalTreeBuilder();
+/*
 	Tree * tree1 = tbuilder->generateTree(7, 0.3, 
 			.27, -0.59, 0.9, 0.8, 0.03, 0, 0);
 
@@ -164,6 +172,32 @@ int main()
 				renderer.geometryNodes.push_back(traslateNode);
 			}
 		}
+		*/
+
+	std::vector<Tree*> treeType;
+	std::vector<TreeNode*> treeNodeType;
+
+	int numTypesTrees = 5;
+
+	for(int i = 0; i < numTypesTrees; i++){
+		treeType.push_back(tbuilder->generateTree(7, 1.0, 
+			.27, -0.59, 0.9, 0.8, 0.2, 0, 0));
+
+		TreeNode * treeNode = new TreeNode();
+		treeNode->init(treeType[i], &heightMapNode);
+		treeNodeType.push_back(treeNode);
+	}
+
+	std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<> dis(0.0, 100.0);
+    std::uniform_int_distribution<> disType(0, numTypesTrees-1);
+
+	for(int i = 0; i < 50; i++){
+		render::TransformationNode * traslateNode = new render::TransformationNode();
+		traslateNode->transformation = glm::translate(glm::mat4(1.0f), glm::vec3(dis(gen), 0.0f, dis(gen)));
+		traslateNode->child = treeNodeType[disType(gen)];
+		renderer.geometryNodes.push_back(traslateNode);
 	}
 
 	// renderer.geometryNodes.push_back(&treeNode);

@@ -130,12 +130,27 @@
 				colorWater += clamp(specular,0, 1);
 				if(material.y > 0){
 					if(depthWater < depthTerrain){
+
+						vec3 position = texture(gPositionMap, texCoord).xyz;
+						vec3 normal = texture(gNormalMap, texCoord).xyz;
+						vec3 albedo = texture(gAlbedoMap, texCoord).xyz;
+						vec3 material = texture(gMaterialMap, texCoord).xyz;
+
+						vec3 viewDirection = normalize((viewMatrix * vec4(position, 1.0)).xyz);
+
+						float lightIntensity = DiffuseLighting(lightDirection, viewDirection, normal, material.x);
+
+						vec3 rec = reflect(normal, viewDirection);
+
+						terrainColor = 2*lightIntensity*albedo*(material.z);
+						terrainColor += material.x*texture(skyTexture, directionToCoordinate(rec)).xyz;
+
 						//In front of something
 
 						float k = (depthTerrain - depthWater)*0.1;
-						k = 1-k;
-						k = exp(-5*k*k);
 						// k = 1-k;
+						k = exp(-10*k*k);
+						k = 1-k;
 						outColor = vec4(k*colorWater + (1-k)*terrainColor, 1.0) ;
 						// outColor = vec4(colorWater, 1.0);
 

@@ -2,7 +2,7 @@
 * @Author: Rafael Marinheiro
 * @Date:   2014-11-07 04:37:39
 * @Last Modified by:   marinheiro
-* @Last Modified time: 2014-12-14 17:10:33
+* @Last Modified time: 2014-12-15 00:05:34
 */
 
 #include <Terrain/builders/DiamondSquareHeightMapBuilder.hpp>
@@ -64,10 +64,16 @@ namespace amaze{
 					float d = heightMap->getHeightAt(x+stepSize, y+stepSize);
 					float e = heightMap->getHeightAt(x+half, y+half);
 
-					setHeightAt(heightMap, x+half, y, (a+c+e)/3 + dis(gen)*scale*stepSize);
-					setHeightAt(heightMap, x, y+half, (a+b+e)/3 + dis(gen)*scale*stepSize);
-					setHeightAt(heightMap, x+stepSize, y+half, (c+d+e)/3 + dis(gen)*scale*stepSize);
-					setHeightAt(heightMap, x+half, y+stepSize, (b+c+e)/3 + dis(gen)*scale*stepSize);
+					float ddx = ((x+half + 0.0)/x_resolution) - 0.5;
+					float ddy = ((y+half + 0.0)/y_resolution) - 0.5;
+
+					float dist = ddx*ddx + ddy*ddy;
+					float cscale = scale * (1/(3.3-dist));
+
+					setHeightAt(heightMap, x+half, y, (a+c+e)/3 + dis(gen)*cscale*stepSize);
+					setHeightAt(heightMap, x, y+half, (a+b+e)/3 + dis(gen)*cscale*stepSize);
+					setHeightAt(heightMap, x+stepSize, y+half, (c+d+e)/3 + dis(gen)*cscale*stepSize);
+					setHeightAt(heightMap, x+half, y+stepSize, (b+c+e)/3 + dis(gen)*cscale*stepSize);
 				}
 			}
 
@@ -110,8 +116,18 @@ namespace amaze{
 
 		for(int x = 0; x < w; x++){
 			for(int y = 0; y < w; y++){
-				float r = heightMap->getHeightAt(x, y);
-				setHeightAt(heightMap, x, y, (r-mini)/(maxi-mini));
+				float ddx = ((x + 0.0)/x_resolution) - 0.5;
+				float ddy = ((y + 0.0)/y_resolution) - 0.5;
+
+				float dist = ddx*ddx + ddy*ddy;
+				float cscale = exp(-10*dist*dist);
+
+				if(x == 0 || y == 0 || x == w-1 || y == w-1){
+					setHeightAt(heightMap, x, y, 0.0);
+				} else{
+					float r = heightMap->getHeightAt(x, y);
+					setHeightAt(heightMap, x, y, cscale*(r-mini)/(maxi-mini));
+				}
 			}
 		}
 

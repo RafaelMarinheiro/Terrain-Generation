@@ -18,6 +18,9 @@ uniform vec3 lightDirection;
 	uniform sampler2D gNormalMap;
 	uniform sampler2D gAlbedoMap;
 	uniform sampler2D gMaterialMap;
+	uniform vec3 eyePosition;
+
+
 
 	out vec4 outColor;
 
@@ -35,13 +38,18 @@ uniform vec3 lightDirection;
 
 
 		vec3 rec = reflect(normal, viewDirection);
-
+		// scattered sunlight between two points
+		// camera=observer
+		// point=point on the ground
+		// sundir=unit vector towards the sun
+		// return scattered light and extinction coefficient
+		// vec3 extinction;
+		// vec3 inscatter = inScattering(eyePosition.xzy, position.xzy, vec3(0.0, 0.0, 1.0), extinction);
 		outColor = 2*lightIntensity*vec4(albedo, 1.0)*(material.z);
 		outColor += material.x*texture(skyTexture, directionToCoordinate(rec));
 		// outColor = vec4(albedo, 1.0);
 
-		// outColor = vec4(material, 1.0);
-
+		// outColor.xyz = extinction;
 	}
 
 #endif
