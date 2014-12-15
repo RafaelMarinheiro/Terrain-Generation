@@ -1,0 +1,2 @@
+/Users/gmulitz/Documents/Homework/College/Sophomore 1/Graphics/Practicum/3D-Maze/prototype-glfw/build/src/Targets/BasicWindow/CMakeFiles/BasicWindow.dir
+/Users/gmulitz/Documents/Homework/College/Sophomore 1/Graphics/Practicum/3D-Maze/prototype-glfw/build/src/Resources/CMakeFiles/Copy_Code_Resources.dir
