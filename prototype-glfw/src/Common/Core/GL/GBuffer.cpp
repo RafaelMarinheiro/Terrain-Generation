@@ -1,8 +1,8 @@
 /* 
 * @Author: Rafael Marinheiro
 * @Date:   2014-11-20 06:29:31
-* @Last Modified by:   Rafael Marinheiro
-* @Last Modified time: 2014-11-23 03:39:39
+* @Last Modified by:   marinheiro
+* @Last Modified time: 2014-12-14 19:44:12
 */
 
 #include <Core/GL/GBuffer.hpp>
@@ -53,7 +53,28 @@ namespace amaze{
 			// restore default FBO
 			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
-			// return true;			
+			// sky
+			glGenFramebuffers(1, &m_skyFbo);   
+			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_skyFbo);
+
+			glGenTextures(1, &m_skyTexture);
+			glBindTexture(GL_TEXTURE_2D, m_skyTexture);
+
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, 512, 512, 0, GL_RGB, GL_FLOAT, NULL);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_skyTexture, 0);
+		
+			glDrawBuffers(1, DrawBuffers);
+
+			if (Status != GL_FRAMEBUFFER_COMPLETE) {
+				printf("Framebuffer error, status: 0x%x\n", Status);
+				// return false;
+			}
+
+			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+
+
 		}
 
 		void GBuffer::bindForWriting(){
@@ -68,6 +89,14 @@ namespace amaze{
 				glActiveTexture(GL_TEXTURE0 + i);
 				glBindTexture(GL_TEXTURE_2D, m_textures[i]);
 			}
+			glActiveTexture(GL_TEXTURE0 + GBUFFER_NUM_TEXTURES);
+			glBindTexture(GL_TEXTURE_2D, m_skyTexture);
+
+			glActiveTexture(GL_TEXTURE0 + GBUFFER_NUM_TEXTURES + 1);
+		}
+
+		void GBuffer::bindForSkyMapRendering(){
+			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_skyFbo);
 		}
 
 		void GBuffer::setReadBuffer(GBuffer::GBufferTextureType type){

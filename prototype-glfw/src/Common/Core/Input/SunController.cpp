@@ -1,8 +1,8 @@
 /* 
 * @Author: Rafael Marinheiro
 * @Date:   2014-11-19 07:28:01
-* @Last Modified by:   Rafael Marinheiro
-* @Last Modified time: 2014-11-19 23:16:54
+* @Last Modified by:   marinheiro
+* @Last Modified time: 2014-12-14 18:48:39
 */
 
 #include <Core/Input/SunController.hpp>
@@ -12,8 +12,8 @@
 
 namespace amaze{
 	SunController::SunController(){
-		sensitivity[0] = 0.05;
-		sensitivity[1] = 0.05;
+		sensitivity[0] = 0.005;
+		sensitivity[1] = 0.005;
 
 		sun[0] = 0;
 		sun[1] = acos(-1);

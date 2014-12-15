@@ -15,6 +15,8 @@ namespace amaze{
 		class Viewer{
 		public:
 			gl::Camera camera;
+			float time;
+			glm::vec3 sunPosition;
 		};
 	}
 }

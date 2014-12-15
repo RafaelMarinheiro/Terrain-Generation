@@ -2,7 +2,7 @@
 * @Author: Rafael Marinheiro
 * @Date:   2014-11-20 05:54:33
 * @Last Modified by:   marinheiro
-* @Last Modified time: 2014-12-13 23:03:41
+* @Last Modified time: 2014-12-14 09:57:53
 */
 
 #include <Ocean/OceanNode.hpp>
@@ -31,6 +31,8 @@ namespace amaze{
 		{
 			std::vector<std::string> files;
 			files.push_back(core::Resources::pathForResource("Shaders/Common.glsl"));
+			files.push_back(core::Resources::pathForResource("Shaders/Atmosphere/SkyMap.glsl"));
+			files.push_back(core::Resources::pathForResource("Shaders/Util/Noise2D.glsl"));
 			files.push_back(core::Resources::pathForResource("Shaders/Water/Water.main.glsl"));
 
 			materialShader.loadFromFiles(files);
@@ -40,8 +42,10 @@ namespace amaze{
 			materialShader.addUniform("projectionMatrix");
 
 			materialShader.addUniform("inverseMVP");
+			materialShader.addUniform("skyTexture");
 
 			materialShader.addUniform("eyePosition");
+			materialShader.addUniform("lightDirection");
 
 			materialShader.addUniform("gPositionMap");
 			materialShader.addUniform("gNormalMap");
@@ -70,7 +74,7 @@ namespace amaze{
 
 		{
 			height = _height;
-			numberWaves = 4;
+			numberWaves = 7;
 		    std::random_device rd;
 		    std::mt19937 gen(rd());
 		    std::uniform_real_distribution<> dis(-M_PI/3, M_PI/3);
@@ -79,11 +83,11 @@ namespace amaze{
 				float amplitude = 0.5f / (i + 1);
 				_amplitudes[i] = amplitude;
 
-				float wavelength = 8 * M_PI / (i + 1);
+				float wavelength = 10 * M_PI / (i*0.7 + 2.3);
 				_wavelength[i] = wavelength;
 
 				float speed = 1.0f + 2*i;
-				_speed[i] = speed;
+				_speed[i] = speed*0.2;
 
 				float angle = dis(gen);
 				_direction[2*i + 0] = cos(angle); _direction[2*i + 1] = sin(angle);
@@ -107,6 +111,7 @@ namespace amaze{
 			glUniformMatrix4fv(materialShader("modelMatrix"), 1, GL_FALSE, glm::value_ptr(worldMatrix));
 			glUniformMatrix4fv(materialShader("viewMatrix"), 1, GL_FALSE, glm::value_ptr(viewer.camera.viewMatrix()));
 			glUniformMatrix4fv(materialShader("projectionMatrix"), 1, GL_FALSE, glm::value_ptr(viewer.camera.projectionMatrix()));
+			glUniform3fv(materialShader("lightDirection"), 1, glm::value_ptr(viewer.sunPosition));
 
 			glm::mat4x4 inverseMVP = viewer.camera.projectionMatrix()*viewer.camera.viewMatrix()*worldMatrix;
 			inverseMVP = glm::inverse(inverseMVP);
@@ -120,13 +125,14 @@ namespace amaze{
 			// }
 			// std::cerr << std::endl;
 
-			// glm::vec4 test = inverseMVP*glm::vec4(0.0, 0.0, 1.0, 1.0);
-			// glm::vec3 pixelPosition = glm::vec3(test[0]/test[3], test[1]/test[3], test[2]/test[3]);
+			glm::vec4 test = inverseMVP*glm::vec4(0.0, 0.0, 1.0, 1.0);
+			glm::vec4 tt = float(2.0)*test;
+			glm::vec3 pixelPosition = glm::vec3(test[0]/test[3], test[1]/test[3], test[2]/test[3]);
 
-			// pixelPosition = pixelPosition - viewer.camera.position;
-			// pixelPosition = glm::normalize(pixelPosition);
+			pixelPosition = pixelPosition - viewer.camera.position;
+			pixelPosition = glm::normalize(pixelPosition);
 
-			// printf("TEST: (%f, %f, %f)\n", pixelPosition[0], pixelPosition[1], pixelPosition[2]);
+			printf("TEST: (%f, %f)\n", pixelPosition[0]/(1+pixelPosition[1]), pixelPosition[2]/(1+pixelPosition[1]));
 
 			// glm::vec4 
 
@@ -144,6 +150,7 @@ namespace amaze{
 			glUniform1i(materialShader("gNormalMap"), 1);
 			glUniform1i(materialShader("gAlbedoMap"), 2);
 			glUniform1i(materialShader("gMaterialMap"), 3);
+			glUniform1i(materialShader("skyTexture"), 4);
 
 			glUniform1i(materialShader("numWaves"), numberWaves);
 			glUniform1f(materialShader("waterHeight"), height);
@@ -151,7 +158,7 @@ namespace amaze{
 			glUniform1fv(materialShader("wavelength"), numberWaves, _wavelength);
 			glUniform1fv(materialShader("speed"), numberWaves, _speed);
 			glUniform2fv(materialShader("direction"), numberWaves, _direction);
-			glUniform1f(materialShader("time"), 42.0);
+			glUniform1f(materialShader("time"), viewer.time);
 			
 			glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 

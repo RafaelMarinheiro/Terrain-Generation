@@ -16,6 +16,7 @@ namespace amaze{
 			DEFERRED_FIRST_PASS,
 				DEFERRED_DEPTH_PASS,			//Write to the Depth Buffer
 				DEFERRED_MATERIAL_PASS,			//Write to the GBuffer
+				DEFERRED_SKY_PASS,				//Draw the SkyMap
 				DEFERRED_LIGHT_PASS,			//Do the Lighting
 				DEFERRED_POST_PROCESSING_PASS,	//Run some post-processing effect
 			DEFERRED_LAST_PASS,

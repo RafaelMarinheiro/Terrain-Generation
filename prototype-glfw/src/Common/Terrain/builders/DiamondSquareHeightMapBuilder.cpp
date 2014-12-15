@@ -1,8 +1,8 @@
 /* 
 * @Author: Rafael Marinheiro
 * @Date:   2014-11-07 04:37:39
-* @Last Modified by:   Rafael Marinheiro
-* @Last Modified time: 2014-11-19 15:54:18
+* @Last Modified by:   marinheiro
+* @Last Modified time: 2014-12-14 17:10:33
 */
 
 #include <Terrain/builders/DiamondSquareHeightMapBuilder.hpp>
@@ -30,10 +30,16 @@ namespace amaze{
 		int stepSize = w-1;
 		float scale = x_size/(stepSize+1);
 
-		setHeightAt(heightMap, 0, 0, dis(gen)*scale*stepSize);
-		setHeightAt(heightMap, 0, w-1, dis(gen)*scale*stepSize);
-		setHeightAt(heightMap, w-1, 0, dis(gen)*scale*stepSize);
-		setHeightAt(heightMap, w-1, w-1, dis(gen)*scale*stepSize);
+		// setHeightAt(heightMap, 0, 0, dis(gen)*scale*stepSize);
+		// setHeightAt(heightMap, 0, w-1, dis(gen)*scale*stepSize);
+		// setHeightAt(heightMap, w-1, 0, dis(gen)*scale*stepSize);
+		// setHeightAt(heightMap, w-1, w-1, dis(gen)*scale*stepSize);
+
+		setHeightAt(heightMap, 0, 0, -_noise);
+		setHeightAt(heightMap, 0, w-1, -_noise);
+		setHeightAt(heightMap, w-1, 0, -_noise);
+		setHeightAt(heightMap, w-1, w-1, -_noise);
+		setHeightAt(heightMap, w/2, w/2, _noise);
 
 		while(stepSize >= 2){
 			int half = stepSize/2;

@@ -19,11 +19,10 @@ namespace amaze{
 	namespace render{
 		class BasicRenderer : public Renderer{
 		public:
-			void init(){
-				gBuffer.init(800, 600);
-			}
+			void init();
 
 			std::vector<RenderNode *> geometryNodes;
+			std::vector<RenderNode *> skyNodes;
 			std::vector<RenderNode *> lightNodes;
 			std::vector<RenderNode *> postProcessingNodes;
 
@@ -31,6 +30,7 @@ namespace amaze{
 		
 		private:
 			gl::GBuffer gBuffer;
+			// GLuint m_skyMapTexture; 
 		};
 	}
 }

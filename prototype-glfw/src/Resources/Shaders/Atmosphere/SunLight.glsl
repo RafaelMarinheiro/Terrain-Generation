@@ -33,8 +33,13 @@ uniform vec3 lightDirection;
 
 		float lightIntensity = DiffuseLighting(lightDirection, viewDirection, normal, material.x);
 
-		// outColor = 2*lightIntensity*vec4(albedo, 1.0);
-		outColor = vec4(position, 1.0);
+
+		vec3 rec = reflect(normal, viewDirection);
+
+		outColor = 2*lightIntensity*vec4(albedo, 1.0)*(material.z);
+		outColor += material.x*texture(skyTexture, directionToCoordinate(rec));
+		// outColor = vec4(albedo, 1.0);
+
 		// outColor = vec4(material, 1.0);
 	}
 

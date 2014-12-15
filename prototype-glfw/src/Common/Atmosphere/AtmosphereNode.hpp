@@ -28,6 +28,10 @@ namespace amaze{
 		GLuint vao;
 		GLuint vbo;
 		gl::Shader sunLightShader;
+		gl::Shader skyMapShader;
+
+		GLuint transmittance_texture;
+		GLuint inscatter_texture;
 	};
 }
 
