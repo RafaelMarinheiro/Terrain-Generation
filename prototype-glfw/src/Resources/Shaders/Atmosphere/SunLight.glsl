@@ -41,6 +41,7 @@ uniform vec3 lightDirection;
 		// outColor = vec4(albedo, 1.0);
 
 		// outColor = vec4(material, 1.0);
+
 	}
 
 #endif

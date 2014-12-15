@@ -24,16 +24,16 @@ namespace amaze{
 
 		virtual void render(const render::Viewer & viewer, render::RenderPass renderPass, const glm::mat4x4 & worldMatrix);
 	
+	GLuint texture;
+	float height;
+	HeightMap * heightMap;
 	private:
-		HeightMap * heightMap;
-		float height;
 
 		unsigned int nindices;
 
 		GLuint vao;
 		GLuint vbo;
 		GLuint ibo;
-		GLuint tex;
 		gl::Shader materialShader;
 	};
 }

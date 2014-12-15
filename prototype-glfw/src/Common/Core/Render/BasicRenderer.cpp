@@ -2,7 +2,7 @@
 * @Author: Rafael Marinheiro
 * @Date:   2014-11-20 04:49:22
 * @Last Modified by:   marinheiro
-* @Last Modified time: 2014-12-14 17:02:35
+* @Last Modified time: 2014-12-14 20:52:04
 */
 
 #include <Core/Render/BasicRenderer.hpp>
@@ -58,7 +58,7 @@ namespace amaze{
 				skyNodes[i]->render(viewer, DEFERRED_SKY_PASS, identity);
 			}
 
-			glViewport(0, 0, 1600, 1200);
+			glViewport(0, 0, 800, 600);
 
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 

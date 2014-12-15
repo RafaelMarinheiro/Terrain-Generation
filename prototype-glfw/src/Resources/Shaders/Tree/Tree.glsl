@@ -1,3 +1,4 @@
+
 #ifdef _VERTEX_
 	in vec3 position;
 	in vec3 normal;
@@ -5,10 +6,11 @@
 	out vec3 daposition;
 	out vec3 norml;
 	void main(){
-		
 		vec4 modelSpace = vec4(position.x, position.y, position.z, 1.0);
 		vec4 modelNorm = vec4(normal.x,normal.y,normal.z,0.0);
 		vec4 worldSpace = modelMatrix * modelSpace;
+		float height = terrain_height*getTerrainHeight(worldSpace.xz);
+		worldSpace.y += height;
 		vec4 cameraSpace = viewMatrix * worldSpace;
 		mat4 normMat = transpose(inverse(modelMatrix));		
 		gl_Position = projectionMatrix * cameraSpace;
@@ -30,7 +32,8 @@
 	void main(){
 		wPosition = daposition;
 		wNormal = normalize(norml);
+		// albedo = vec3(1.0, 1.0, 1.0);
 		albedo = vec3(0.5,0.25,0.0625);
-		material = vec3(1.0, 1.0, 0.0);
+		material = vec3(0.15, 1.0, 1.0);
 	}
 #endif

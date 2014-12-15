@@ -2,7 +2,7 @@
 * @Author: Rafael Marinheiro
 * @Date:   2014-11-20 05:04:26
 * @Last Modified by:   marinheiro
-* @Last Modified time: 2014-12-14 19:13:06
+* @Last Modified time: 2014-12-14 21:05:40
 */
 
 #include <Terrain/HeightMapNode.hpp>
@@ -60,8 +60,8 @@ namespace amaze{
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size()*sizeof(int), &indices[0], GL_STATIC_DRAW);
 
 			glActiveTexture(GL_TEXTURE0);
-			glGenTextures(1, &tex);
-			glBindTexture(GL_TEXTURE_2D, tex);
+			glGenTextures(1, &texture);
+			glBindTexture(GL_TEXTURE_2D, texture);
 
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -109,7 +109,7 @@ namespace amaze{
 		glDeleteBuffers(1, &vbo);
 		glDeleteBuffers(1, &ibo);
 		glDeleteVertexArrays(1, &vao);
-		glDeleteTextures(1, &tex);
+		glDeleteTextures(1, &texture);
 		materialShader = gl::Shader();
 		heightMap = NULL;
 	}
@@ -120,7 +120,7 @@ namespace amaze{
 
 			materialShader.use();
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, tex);
+			glBindTexture(GL_TEXTURE_2D, texture);
 			glUniform1i(materialShader("terrain_heightMap"), 0);
 			glUniformMatrix4fv(materialShader("modelMatrix"), 1, GL_FALSE, glm::value_ptr(worldMatrix));
 			glUniformMatrix4fv(materialShader("viewMatrix"), 1, GL_FALSE, glm::value_ptr(viewer.camera.viewMatrix()));

@@ -12,7 +12,8 @@
 namespace amaze{
 
 
-	void TreeNode::init(Tree * tree){
+	void TreeNode::init(Tree * tree, HeightMapNode * heightMapNode){
+		_heightMapNode = heightMapNode;
 		this-> tree = tree;
 
 		std::vector<float> vertices;
@@ -193,6 +194,7 @@ namespace amaze{
 		{	
 			std::vector<std::string> files;
 			files.push_back(core::Resources::pathForResource("Shaders/Common.glsl"));
+			files.push_back(core::Resources::pathForResource("Shaders/Terrain/Helper.glsl"));
 			files.push_back(core::Resources::pathForResource("Shaders/Tree/Tree.glsl"));
 			// files.push_back(core::Resources::pathForResource("Shaders/Terrain/Material.glsl"));
 
@@ -202,13 +204,21 @@ namespace amaze{
 			materialShader.addUniform("viewMatrix");
 			materialShader.addUniform("projectionMatrix");
 			
+			materialShader.addUniform("terrain_heightMap");
+			materialShader.addUniform("terrain_size");
+			materialShader.addUniform("terrain_height");
 
 			materialShader.addAttribute("position");
 			materialShader.addAttribute("normal");
 			glBindVertexArray(vao);
 			materialShader.use();
+
+			glUniform1f(materialShader("terrain_size"), heightMapNode->heightMap->getSizeX());
+			glUniform1f(materialShader("terrain_height"), heightMapNode->height);
+
 			glEnableVertexAttribArray(materialShader["position"]);
 			glVertexAttribPointer(materialShader["position"], 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), 0);
+			glEnableVertexAttribArray(materialShader["normal"]);
 			glVertexAttribPointer(materialShader["normal"], 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void *) (3*sizeof(float)));
 
 			materialShader.unUse();
@@ -221,6 +231,10 @@ namespace amaze{
 			glBindVertexArray(vao);
 
 			materialShader.use();
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, _heightMapNode->texture);
+			glUniform1i(materialShader("terrain_heightMap"), 0);
+			
 			glUniformMatrix4fv(materialShader("modelMatrix"), 1, GL_FALSE, glm::value_ptr(worldMatrix));
 			glUniformMatrix4fv(materialShader("viewMatrix"), 1, GL_FALSE, glm::value_ptr(viewer.camera.viewMatrix()));
 			glUniformMatrix4fv(materialShader("projectionMatrix"), 1, GL_FALSE, glm::value_ptr(viewer.camera.projectionMatrix()));

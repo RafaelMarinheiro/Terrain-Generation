@@ -123,27 +123,50 @@ int main()
 	AtmosphereNode atmosphereNode;
 	atmosphereNode.init();
 
-	// renderer.geometryNodes.push_back(&heightMapNode);
 
-	TreeBuilder * tbuilder = new FractalTreeBuilder();
-	Tree * tree = tbuilder->generateTree(9, 20, 
-			0., -0.39, 0.9, 0.8, 2.0, 0, 0);
-
-	TreeNode treeNode;
-	treeNode.init(tree);
-
-	renderer.geometryNodes.push_back(&treeNode);
-
-	renderer.lightNodes.push_back(&atmosphereNode);
-
-
-	// renderer.lightNodes.push_back(&oceanNode);
 	renderer.geometryNodes.push_back(&heightMapNode);
 
 	renderer.skyNodes.push_back(&atmosphereNode);
 
 	renderer.lightNodes.push_back(&atmosphereNode);
 	renderer.lightNodes.push_back(&oceanNode);
+
+
+	TreeBuilder * tbuilder = new FractalTreeBuilder();
+	Tree * tree1 = tbuilder->generateTree(7, 0.3, 
+			.27, -0.59, 0.9, 0.8, 0.03, 0, 0);
+
+	TreeNode treeNode1;
+	treeNode1.init(tree1, &heightMapNode);
+
+
+	Tree * tree2 = tbuilder->generateTree(7, 0.3, 
+			.0, -0.39, 0.9, 0.8, 0.03, 0, 0);
+
+	TreeNode treeNode2;
+	treeNode2.init(tree2, &heightMapNode);
+
+
+	Tree * tree3 = tbuilder->generateTree(7, 0.3, 
+			.2, -0.3, 0.9, 0.8, 0.03, 0, 0);
+
+	TreeNode treeNode3;
+	treeNode3.init(tree3, &heightMapNode);
+
+	for(int i = 5; i < 100; i+= 5){
+		for(int j = 5; j < 100; j+= 5){
+			float height = heightMapNode.heightMap->getHeightAt(i*5,j*5);
+			printf("height %f \n", height);
+			if(height < 0.6 && height > 0.4 ){
+				render::TransformationNode * traslateNode = new render::TransformationNode();
+				traslateNode->transformation = glm::translate(glm::mat4(1.0f), glm::vec3(i+0.0f, 0.0f, j+0.0f));
+				traslateNode->child = &treeNode3;
+				renderer.geometryNodes.push_back(traslateNode);
+			}
+		}
+	}
+
+	// renderer.geometryNodes.push_back(&treeNode);
 
 	// renderer.postProcessingNodes.push_back(&oceanNode);
 	// ----------------------------- RESOURCES ----------------------------- //
@@ -189,12 +212,7 @@ int main()
 			lag -= fps;
 			viewer.time += fps;
 		}
-<<<<<<< HEAD
 
-		// viewer.camera.lookAt(glm::vec3(0.0, 0.0, 0.0));
-
-=======
->>>>>>> 7ab1b6367bccd4001920a33307bf82cb114b1c48
 		glm::vec3 sunDirection = sunController.getSunDirection();
 
 		viewer.sunPosition = sunDirection;
