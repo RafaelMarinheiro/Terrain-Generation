@@ -16,4 +16,5 @@
 #include <glm/gtx/euler_angles.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 
+
 #endif // MATH_VECTOR_HPP
