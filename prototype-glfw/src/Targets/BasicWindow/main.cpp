@@ -27,7 +27,12 @@
 
 #include <random>
 
+
 using namespace amaze;
+
+
+
+
 
 void printMatrix(const glm::mat4 & mat){
 	for(int i = 0; i < 4; i++){
@@ -126,6 +131,7 @@ int main()
 	AtmosphereNode atmosphereNode;
 	atmosphereNode.init();
 
+
 	CloudNode cloudNode;
 	cloudNode.init();
 
@@ -137,33 +143,79 @@ int main()
 	renderer.lightNodes.push_back(&atmosphereNode);
 	renderer.lightNodes.push_back(&oceanNode);
 
+
 	TreeBuilder * tbuilder = new FractalTreeBuilder();
+/*
+	Tree * tree1 = tbuilder->generateTree(7, 0.3, 
+			.27, -0.59, 0.9, 0.8, 0.03, 0, 0);
+	TreeNode treeNode1;
+	treeNode1.init(tree1, &heightMapNode);
+	Tree * tree2 = tbuilder->generateTree(7, 0.3, 
+			.0, -0.39, 0.9, 0.8, 0.03, 0, 0);
+	TreeNode treeNode2;
+	treeNode2.init(tree2, &heightMapNode);
+	Tree * tree3 = tbuilder->generateTree(7, 0.3, 
+			.2, -0.3, 0.9, 0.8, 0.03, 0, 0);
+	TreeNode treeNode3;
+	treeNode3.init(tree3, &heightMapNode);
+	for(int i = 5; i < 100; i+= 5){
+		for(int j = 5; j < 100; j+= 5){
+			float height = heightMapNode.heightMap->getHeightAt(i*5,j*5);
+			printf("height %f \n", height);
+			if(height < 0.6 && height > 0.4 ){
+				render::TransformationNode * traslateNode = new render::TransformationNode();
+				traslateNode->transformation = glm::translate(glm::mat4(1.0f), glm::vec3(i+0.0f, 0.0f, j+0.0f));
+				traslateNode->child = &treeNode3;
+				renderer.geometryNodes.push_back(traslateNode);
+			}
+		}
+		*/
+
 	std::vector<Tree*> treeType;
 	std::vector<TreeNode*> treeNodeType;
 
 	int numTypesTrees = 5;
-
+	std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<> dis(0.0, 5.0);
+    std::uniform_int_distribution<> disType(0, numTypesTrees-1);
+	std::uniform_real_distribution<> disAngle(0.0, 0.5);
 	for(int i = 0; i < numTypesTrees; i++){
+		float angle1 =disAngle(gen);
 		treeType.push_back(tbuilder->generateTree(7, 1.0, 
-			.27, -0.59, 0.9, 0.8, 0.2, 0, 0));
+			angle1, angle1-0.87, 0.9, 0.8, 0.2, 0, 0));
 
 		TreeNode * treeNode = new TreeNode();
 		treeNode->init(treeType[i], &heightMapNode);
 		treeNodeType.push_back(treeNode);
 	}
 
-	std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<> dis(0.0, 100.0);
-    std::uniform_int_distribution<> disType(0, numTypesTrees-1);
+	
+	for(int i = 5; i < 100; i+= 5){
+		for(int j = 5; j < 100; j+= 5){
 
-	for(int i = 0; i < 50; i++){
-		render::TransformationNode * traslateNode = new render::TransformationNode();
-		traslateNode->transformation = glm::translate(glm::mat4(1.0f), glm::vec3(dis(gen), 0.0f, dis(gen)));
-		traslateNode->child = treeNodeType[disType(gen)];
-		renderer.geometryNodes.push_back(traslateNode);
+			
+			float height = heightMapNode.heightMap->getHeightAt(i*5,j*5);
+			if(height < 0.6 && height > 0.4 ){
+				float x = dis(gen);
+				float y = dis(gen);
+				render::TransformationNode * traslateNode = new render::TransformationNode();
+				//OtherRotate::rotate(disAngle(gen),0.0f,1.0f,0.0f)
+				traslateNode->transformation = glm::translate(glm::mat4(1.0f), glm::vec3(x+i, 0.0f, y+j));
+				traslateNode->child = treeNodeType[disType(gen)];
+				renderer.geometryNodes.push_back(traslateNode);
+
+
+				x = dis(gen);
+				y = dis(gen);
+				traslateNode = new render::TransformationNode();
+				traslateNode->transformation = glm::translate(glm::mat4(1.0f), glm::vec3(x+i, 0.0f, y+j));
+				traslateNode->child = treeNodeType[disType(gen)];
+				renderer.geometryNodes.push_back(traslateNode);
+				
+			}
+		}
 	}
-
 	// renderer.geometryNodes.push_back(&treeNode);
 
 	// renderer.postProcessingNodes.push_back(&oceanNode);
@@ -202,7 +254,7 @@ int main()
 		previous = current;
 		glfwPollEvents();
 
-		printf("FPS: %lf\n", 1/elapsed);
+		//printf("FPS: %lf\n", 1/elapsed);
 		while(lag >= fps){
 			for(int i = 0; i < input_controllers.size(); i++){
 				input_controllers[i]->update();
@@ -210,6 +262,7 @@ int main()
 			lag -= fps;
 			viewer.time += fps;
 		}
+
 		glm::vec3 sunDirection = sunController.getSunDirection();
 
 		viewer.sunPosition = sunDirection;
