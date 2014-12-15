@@ -112,17 +112,21 @@ int main()
 	HeightMap * heightMap = builder->buildHeightMap(100.0, 100.0, 513, 513);
 	HeightMapNode heightMapNode;
 
-	heightMapNode.init(heightMap, 10.0);
+	heightMapNode.init(heightMap, 26.0);
 
 	OceanNode oceanNode;
-	oceanNode.init(3.0);
+	oceanNode.init(10);
 
 	AtmosphereNode atmosphereNode;
 	atmosphereNode.init();
 
 	renderer.geometryNodes.push_back(&heightMapNode);
+
+	renderer.skyNodes.push_back(&atmosphereNode);
+
 	renderer.lightNodes.push_back(&atmosphereNode);
 	renderer.lightNodes.push_back(&oceanNode);
+
 	// renderer.postProcessingNodes.push_back(&oceanNode);
 	// ----------------------------- RESOURCES ----------------------------- //
 
@@ -145,6 +149,7 @@ int main()
 
 	glfwSetInputMode(window->getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	
+	viewer.time = 0.0;
 	double previous = glfwGetTime();
 	double lag = 0.0;
 	double fps = 1.0/60;
@@ -164,11 +169,11 @@ int main()
 				input_controllers[i]->update();
 			}
 			lag -= fps;
+			viewer.time += fps;
 		}
-
 		glm::vec3 sunDirection = sunController.getSunDirection();
 
-		atmosphereNode.sunPosition = sunDirection;
+		viewer.sunPosition = sunDirection;
 
 		renderer.render(viewer);
 		window->swapBuffers();

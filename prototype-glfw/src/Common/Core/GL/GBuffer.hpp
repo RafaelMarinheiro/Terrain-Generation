@@ -24,6 +24,7 @@ namespace amaze{
 
 			void init(unsigned int windowWidth, unsigned int windowHeight);
 			void bindForWriting();
+			void bindForSkyMapRendering();
 			void bindForReading();
 			void setReadBuffer(GBufferTextureType type);
 		private:
@@ -31,6 +32,8 @@ namespace amaze{
 			GLuint m_fbo;
 			GLuint m_textures[GBUFFER_NUM_TEXTURES];
 			GLuint m_depthTexture;
+			GLuint m_skyFbo;
+			GLuint m_skyTexture;
 			GLuint m_finalTexture;
 		};
 	}

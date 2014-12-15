@@ -2,7 +2,7 @@
 * @Author: Rafael Marinheiro
 * @Date:   2014-11-20 04:49:22
 * @Last Modified by:   marinheiro
-* @Last Modified time: 2014-12-13 19:58:06
+* @Last Modified time: 2014-12-14 17:02:35
 */
 
 #include <Core/Render/BasicRenderer.hpp>
@@ -11,10 +11,17 @@
 
 namespace amaze{
 	namespace render{
+		void BasicRenderer::init(){
+			gBuffer.init(800, 600);
+			// glGenTextures(1, &m_skyMapTexture);
+		}
+
 		void BasicRenderer::render(const Viewer & viewer){
 			glm::mat4x4 identity;
 
 			gBuffer.bindForWriting();
+
+			glViewport(0, 0, 800, 600);
 
 			glDepthMask(GL_TRUE);
 
@@ -28,7 +35,7 @@ namespace amaze{
 					geometryNodes[i]->render(viewer, DEFERRED_DEPTH_PASS, identity);
 				}
 
-			glDepthMask(GL_FALSE);
+			glDepthMask(GL_TRUE);
 
 				for(int i = 0; i < geometryNodes.size(); i++){
 					geometryNodes[i]->render(viewer, DEFERRED_MATERIAL_PASS, identity);
@@ -40,9 +47,28 @@ namespace amaze{
 			// glBlendEquation(GL_FUNC_ADD);
 			// glBlendFunc(GL_ONE, GL_ONE);
 			
-			gBuffer.bindForReading();
+			//SkyMap
+
+			gBuffer.bindForSkyMapRendering();
+			glViewport(0, 0, 512, 512);
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+			for(int i = 0; i < skyNodes.size(); i++){
+				skyNodes[i]->render(viewer, DEFERRED_SKY_PASS, identity);
+			}
+
+			glViewport(0, 0, 1600, 1200);
+
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+			gBuffer.bindForReading();
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			
+			// glReadBuffer(GL_TEXTURE0 + gl::GBuffer::GBUFFER_NUM_TEXTURES);
+			// glBlitFramebuffer(0, 0, 512, 512, 0, 0, 512, 512,  GL_COLOR_BUFFER_BIT, GL_LINEAR);
+
+			// glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			// glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			// glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

@@ -1,8 +1,8 @@
 /* 
 * @Author: Rafael Marinheiro
 * @Date:   2014-11-20 05:04:26
-* @Last Modified by:   Rafael Marinheiro
-* @Last Modified time: 2014-11-23 15:15:42
+* @Last Modified by:   marinheiro
+* @Last Modified time: 2014-12-14 19:13:06
 */
 
 #include <Terrain/HeightMapNode.hpp>
@@ -30,7 +30,7 @@ namespace amaze{
 				for(int j = 0; j < ny; j++){
 					vertices.push_back(i*dx);
 					vertices.push_back(j*dy);
-					if(i < nx - 1 && j < ny - 1){
+					if(1 < i && i < nx - 1 && 1 < j && j < ny - 1){
 						indices.push_back(j + i*nx);
 						indices.push_back(j + 1 + i*nx);
 						indices.push_back(j + 1 + (i+1)*nx);
@@ -76,6 +76,7 @@ namespace amaze{
 		{	
 			std::vector<std::string> files;
 			files.push_back(core::Resources::pathForResource("Shaders/Common.glsl"));
+			files.push_back(core::Resources::pathForResource("Shaders/Util/Noise2d.glsl"));
 			files.push_back(core::Resources::pathForResource("Shaders/Terrain/Helper.glsl"));
 			files.push_back(core::Resources::pathForResource("Shaders/Terrain/Material.glsl"));
 

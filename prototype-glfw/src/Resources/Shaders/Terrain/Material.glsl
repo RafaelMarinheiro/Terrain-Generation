@@ -1,13 +1,14 @@
-vec3 colorForPosition(float h){
-	if(h > 0.8){
-		return vec3(0.22, 0.19, 0.2);
+vec3 colorForPosition(float h, vec2 pos){
+	float noise = 0.15*snoise(3*pos.yx) + 0.85;
+	if(h > 0.85){
+		return vec3(255/255.0, 250/255.0, 250/255.0) + 0.5;
 	} else if(h > 0.6){
-		return vec3(0.77, 0.57, 0.44);
+		return vec3(0.77, 0.57, 0.44)+0.1*noise;
 	} else if(h > 0.4){
-		return vec3(0.48, 0.56, 0.32);
+		return 0.1*(0.15*snoise(7*pos.yx) + 0.85)+vec3(0.48, 0.56, 0.32);
 	} else{
 		h = (h)/0.4;
-		return vec3((1-h)*0.61 + h*0.48,
+		return 0.1*noise+vec3((1-h)*0.61 + h*0.48,
 				  (1-h)*0.65 + h*0.56,
 				  (1-h)*0.46 + h*0.32);
 	}
@@ -45,8 +46,8 @@ vec3 colorForPosition(float h){
 
 	void main(){
 		wPosition = daposition;
-		wNormal = normalize(normal);
-		albedo = colorForPosition(height);
-		material = vec3(1.0, 1.0, 0.0);
+		wNormal = normalize(normalize(normal)+0.3*vec3(snoise(3*wPosition.xz), 0.0, snoise(3*wPosition.zx)));
+		albedo = colorForPosition(height, wPosition.xz);
+		material = vec3(0.2, 1.0, 0.95);
 	}
 #endif
