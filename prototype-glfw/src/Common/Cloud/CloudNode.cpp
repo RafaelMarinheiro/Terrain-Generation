@@ -1,8 +1,8 @@
 /* 
 * @Author: Rafael Marinheiro
 * @Date:   2014-11-23 01:58:35
-* @Last Modified by:   Rafael Marinheiro
-* @Last Modified time: 2014-11-23 15:11:09
+* @Last Modified by:   marinheiro
+* @Last Modified time: 2014-12-14 23:35:52
 */
 
 #include <Cloud/CloudNode.hpp>
@@ -14,8 +14,79 @@
 
 namespace amaze{
 	void CloudNode::init(){
-			SetNoise(map32);
+		// std::cout <<"maybeHere";		
+		{
+			glGenVertexArrays(1, &vao);
+			glBindVertexArray(vao);
+
+			glGenBuffers(1, &vbo);
+			glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+			float arr[8] = {-1, -1,	1, -1, 		1, 1, 	-1, 1};
+			glBufferData(GL_ARRAY_BUFFER, sizeof(arr), &arr[0], GL_STATIC_DRAW);
 		}
+
+		// std::cout <<"Here";
+
+		{
+			SetNoise(map32);
+			LoopForever();
+			float texture[256][256][3];       //Temporary array to hold texture RGB values 
+
+			for(int i=0; i<256; i++){         //Set cloud color value to temporary array
+				for(int j=0; j<256; j++){
+					float color = map256[i*256+j]/256; 
+					// std::cout << color << std::endl;
+					texture[i][j][0]=color;
+					texture[i][j][1]=color;
+					texture[i][j][2]=color;
+				}
+			}
+			glGenTextures(1, &cloudTexture);           //Texture binding 
+			glBindTexture(GL_TEXTURE_2D, cloudTexture);
+
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, 256, 256, 0, GL_RGB, GL_FLOAT, texture);
+			// glGenerateMipMap(GL_TEXTURE_2D);
+
+		}
+		// std::cout <<"or Here";
+		{
+			std::vector<std::string> files;
+			files.push_back(core::Resources::pathForResource("Shaders/Common.glsl"));
+			files.push_back(core::Resources::pathForResource("Shaders/Atmosphere/SkyMap.glsl"));
+			files.push_back(core::Resources::pathForResource("Shaders/Util/Noise2d.glsl"));
+			files.push_back(core::Resources::pathForResource("Shaders/Cloud/main.glsl"));
+
+			cloudShader.loadFromFiles(files);
+
+			cloudShader.addUniform("modelMatrix");
+			cloudShader.addUniform("time");
+			
+			cloudShader.addUniform("viewMatrix");
+			cloudShader.addUniform("projectionMatrix");
+
+			cloudShader.addUniform("inverseMVP");
+			cloudShader.addUniform("skyTexture");
+
+			cloudShader.addUniform("cloudTexture");
+			cloudShader.addAttribute("position");
+
+			glBindVertexArray(vao);
+			cloudShader.use();
+
+			glEnableVertexAttribArray(cloudShader["position"]);
+			glVertexAttribPointer(cloudShader["position"], 2, GL_FLOAT, GL_FALSE, 0, 0);
+		
+			cloudShader.unUse();
+			glBindVertexArray(0);
+		}
+
+	}
 
 	void CloudNode::LoopForever(){
 		OverlapOctaves(map32, map256);
@@ -117,8 +188,8 @@ namespace amaze{
 
 	//Filter the noise with exponential function
 	void CloudNode::ExpFilter(float  *map){
-		float cover = 20.0f;
-		float sharpness = 0.95f;
+		float cover = 1.0f;
+		float sharpness = 0.99f;
 		for (int x=0; x<256*256; x++){
 		    float c = map[x] - (255.0f-cover);
 		    if (c<0){
@@ -128,51 +199,43 @@ namespace amaze{
 		}
 	}
 
-	void DrawGLScene(){
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glLoadIdentity();
+	void CloudNode::render(const render::Viewer & viewer, render::RenderPass renderPass, const glm::mat4x4 & worldMatrix){
+		if(renderPass == render::DEFERRED_SKY_PASS){
+			// std::cout << "Hey";
+			glBindVertexArray(vao);
 
-		LoopForever();                   //Our cloud function  
+			cloudShader.use();
+			glUniformMatrix4fv(cloudShader("modelMatrix"), 1, GL_FALSE, glm::value_ptr(worldMatrix));
+			glUniformMatrix4fv(cloudShader("viewMatrix"), 1, GL_FALSE, glm::value_ptr(viewer.camera.viewMatrix()));
+			glUniformMatrix4fv(cloudShader("projectionMatrix"), 1, GL_FALSE, glm::value_ptr(viewer.camera.projectionMatrix()));
+			
+			glm::mat4x4 inverseMVP = viewer.camera.projectionMatrix()*viewer.camera.viewMatrix()*worldMatrix;
+			inverseMVP = glm::inverse(inverseMVP);
 
-		char texture[256][256][3];       //Temporary array to hold texture RGB values 
+			glUniformMatrix4fv(cloudShader("inverseMVP"), 1, GL_FALSE, glm::value_ptr(inverseMVP));
 
-		for(int i=0; i<256; i++){         //Set cloud color value to temporary array
-			for(int j=0; j<256; j++){
-				float color = map256[i*256+j]; 
+			// glUniform3fv(cloudShader("lightDirection"), 1, glm::value_ptr(viewer.sunPosition)); //For testing
+			
+			// printf("SUN: (%f, %lf, %lf)\n", sunPosition[0], sunPosition[1], sunPosition[2]);
 
-				texture[i][j][0]=color;
-				texture[i][j][1]=color;
-				texture[i][j][2]=color;
-			}
+			glActiveTexture(GL_TEXTURE7);
+			glBindTexture(GL_TEXTURE_2D, cloudTexture);
+
+			// glActiveTexture(GL_TEXTURE1);
+			// glBindTexture(GL_TEXTURE_3D, inscatter_texture);
+
+			glUniform1i(cloudShader("skyTexture"), 4);
+			glUniform1i(cloudShader("cloudTexture"), 7);
+			glUniform1f(cloudShader("time"), viewer.time);
+			
+			// glUniform1i(cloudShader("inscatterSampler"), 1);
+
+			glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+
+			cloudShader.unUse();
+			glBindVertexArray(0);
+
 		}
-
-		unsigned int ID;                 //Generate an ID for texture binding                     
-		glGenTextures(1, &ID);           //Texture binding 
-		glBindTexture(GL_TEXTURE_2D, ID);
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-		gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, 256, 256, GL_RGB, GL_UNSIGNED_BYTE, texture);
-
-		glMatrixMode(GL_TEXTURE);        //Let's move the clouds from left to right
-		static float x;    
-		x+=0.01f;
-		glTranslatef(x,0,0); // moves it left to right
-
-
-		glEnable(GL_TEXTURE_2D);         //Render the cloud texture
-		glBegin(GL_QUADS);
-
-		glTexCoord2d(1,1); glVertex3f(0.5f, 0.5f, 0.);
-		glTexCoord2d(0,1); glVertex3f(-0.5f, 0.5f, 0.);
-		glTexCoord2d(0,0); glVertex3f(-0.5f, -0.5f, 0.);
-		glTexCoord2d(1,0); glVertex3f(0.5f, -0.5f, 0.);
-		glEnd(); 
-
-		SwapBuffers(hDC);
 	}
 
 

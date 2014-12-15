@@ -2,7 +2,7 @@
 * @Author: Rafael Marinheiro
 * @Date:   2014-11-20 04:49:22
 * @Last Modified by:   marinheiro
-* @Last Modified time: 2014-12-14 20:52:04
+* @Last Modified time: 2014-12-14 23:16:46
 */
 
 #include <Core/Render/BasicRenderer.hpp>
@@ -49,7 +49,9 @@ namespace amaze{
 			
 			//SkyMap
 
+
 			gBuffer.bindForSkyMapRendering();
+			gBuffer.bindForReading();
 			glViewport(0, 0, 512, 512);
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -58,34 +60,39 @@ namespace amaze{
 				skyNodes[i]->render(viewer, DEFERRED_SKY_PASS, identity);
 			}
 
+
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			gBuffer.bindForReading();
+
 			glViewport(0, 0, 1600, 1200);
 
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-			gBuffer.bindForReading();
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			
-			// glReadBuffer(GL_TEXTURE0 + gl::GBuffer::GBUFFER_NUM_TEXTURES);
-			// glBlitFramebuffer(0, 0, 512, 512, 0, 0, 512, 512,  GL_COLOR_BUFFER_BIT, GL_LINEAR);
-
-			// glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-			// glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			// glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 			// gBuffer.bindForReading();
+			// glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			
+			// // glReadBuffer(GL_TEXTURE0 + gl::GBuffer::GBUFFER_NUM_TEXTURES);
+			// // glBlitFramebuffer(0, 0, 512, 512, 0, 0, 512, 512,  GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
-			// gBuffer.setReadBuffer(gl::GBuffer::GBUFFER_TEXTURE_TYPE_ALBEDO);
-			// glBlitFramebuffer(0, 0, 800, 600,
-			// 0, 0, 800, 600, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+			// // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			// gBuffer.setReadBuffer(gl::GBuffer::GBUFFER_TEXTURE_TYPE_NORMAL);
-			// glBlitFramebuffer(0, 0, 800, 600, 
-			// 0, 600, 800, 1200, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+			// // glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			// // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			// gBuffer.setReadBuffer(gl::GBuffer::GBUFFER_TEXTURE_TYPE_POSITION);
-			// glBlitFramebuffer(0, 0, 800, 600, 
-			// 800, 600, 1600, 1200, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+			// // gBuffer.bindForReading();
+
+			// // gBuffer.setReadBuffer(gl::GBuffer::GBUFFER_TEXTURE_TYPE_ALBEDO);
+			// // glBlitFramebuffer(0, 0, 800, 600,
+			// // 0, 0, 800, 600, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+
+			// // gBuffer.setReadBuffer(gl::GBuffer::GBUFFER_TEXTURE_TYPE_NORMAL);
+			// // glBlitFramebuffer(0, 0, 800, 600, 
+			// // 0, 600, 800, 1200, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+
+			// // gBuffer.setReadBuffer(gl::GBuffer::GBUFFER_TEXTURE_TYPE_POSITION);
+			// // glBlitFramebuffer(0, 0, 800, 600, 
+			// // 800, 600, 1600, 1200, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
 			for(int i = 0; i < lightNodes.size(); i++){
 				lightNodes[i]->render(viewer, DEFERRED_LIGHT_PASS, identity);

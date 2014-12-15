@@ -2,7 +2,7 @@
 * @Author: Rafael Marinheiro
 * @Date:   2014-11-20 06:29:31
 * @Last Modified by:   marinheiro
-* @Last Modified time: 2014-12-14 19:44:12
+* @Last Modified time: 2014-12-14 23:05:25
 */
 
 #include <Core/GL/GBuffer.hpp>
@@ -83,7 +83,7 @@ namespace amaze{
 
 		void GBuffer::bindForReading(){
 			// glBindFramebuffer(GL_READ_FRAMEBUFFER, m_fbo);
-			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+			// glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
 			for(unsigned int i = 0 ; i < GBUFFER_NUM_TEXTURES; i++){
 				glActiveTexture(GL_TEXTURE0 + i);
@@ -93,6 +93,7 @@ namespace amaze{
 			glBindTexture(GL_TEXTURE_2D, m_skyTexture);
 
 			glActiveTexture(GL_TEXTURE0 + GBUFFER_NUM_TEXTURES + 1);
+			// glBindTexture()
 		}
 
 		void GBuffer::bindForSkyMapRendering(){

@@ -14,16 +14,19 @@
 #include <Core/GL/OpenGL.hpp>
 
 namespace amaze{
-	class CloudNode{
+	class CloudNode : public render::RenderNode{
 	public:
 
 		void init();
 		void destroy();
 
-		void DrawGLScene();
+		virtual void render(const render::Viewer & viewer, render::RenderPass renderPass, const glm::mat4x4 & worldMatrix);
 	
 
 	private:
+
+
+
 		//noise generator, function takes in a random integer to generate different noise patterns
 		float Noise(int x, int y, int random);
 		void SetNoise(float* map);
@@ -47,6 +50,11 @@ namespace amaze{
 
 		float map32[32 * 32];
 		float map256[256 * 256];
+
+		GLuint vao;
+		GLuint vbo;
+		GLuint cloudTexture;
+		gl::Shader cloudShader;
 	};
 }
 

@@ -2,7 +2,7 @@
 * @Author: Rafael Marinheiro
 * @Date:   2014-11-23 01:58:35
 * @Last Modified by:   marinheiro
-* @Last Modified time: 2014-12-14 18:53:42
+* @Last Modified time: 2014-12-15 00:53:46
 */
 
 #include <Atmosphere/AtmosphereNode.hpp>
@@ -39,6 +39,8 @@ namespace amaze{
 		{
 			std::vector<std::string> files;
 			files.push_back(core::Resources::pathForResource("Shaders/Common.glsl"));
+
+			files.push_back(core::Resources::pathForResource("Shaders/Atmosphere/Atmosphere.glsl"));
 			files.push_back(core::Resources::pathForResource("Shaders/Lighting/OrenNayar.glsl"));
 			files.push_back(core::Resources::pathForResource("Shaders/Atmosphere/SkyMap.glsl"));
 			files.push_back(core::Resources::pathForResource("Shaders/Atmosphere/SunLight.glsl"));
@@ -56,6 +58,9 @@ namespace amaze{
 
 			sunLightShader.addUniform("skyTexture");
 
+			sunLightShader.addUniform("transmittanceSampler");
+			sunLightShader.addUniform("inscatterSampler");
+			sunLightShader.addUniform("eyePosition");
 
 			sunLightShader.addUniform("lightDirection");
 
@@ -155,11 +160,22 @@ namespace amaze{
 			glUniformMatrix4fv(sunLightShader("projectionMatrix"), 1, GL_FALSE, glm::value_ptr(viewer.camera.projectionMatrix()));
 			glUniform3fv(sunLightShader("lightDirection"), 1, glm::value_ptr(viewer.sunPosition)); //For testing
 			
+			glUniform3fv(sunLightShader("eyePosition"), 1, glm::value_ptr(viewer.camera.position)); //For testing
+			
+
+			glActiveTexture(GL_TEXTURE7);
+			glBindTexture(GL_TEXTURE_2D, transmittance_texture);
+
+			glActiveTexture(GL_TEXTURE8);
+			glBindTexture(GL_TEXTURE_3D, inscatter_texture);
+
 			glUniform1i(sunLightShader("gPositionMap"), 0);
 			glUniform1i(sunLightShader("gNormalMap"), 1);
 			glUniform1i(sunLightShader("gAlbedoMap"), 2);
 			glUniform1i(sunLightShader("gMaterialMap"), 3);
 			glUniform1i(sunLightShader("skyTexture"), 4);
+			glUniform1i(sunLightShader("transmittanceSampler"), 87);
+			glUniform1i(sunLightShader("inscatterSampler"), 8);
 
 			glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 

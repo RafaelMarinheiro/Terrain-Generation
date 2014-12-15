@@ -31,7 +31,7 @@
 
 	void main(){
 		wPosition = daposition;
-		wNormal = -normalize(norml);
+		wNormal = normalize(norml);
 		// albedo = vec3(1.0, 1.0, 1.0);
 		albedo = vec3(0.5,0.25,0.0625);
 		material = vec3(0.15, 1.0, 1.0);
