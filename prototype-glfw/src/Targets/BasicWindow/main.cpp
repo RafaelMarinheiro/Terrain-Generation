@@ -126,8 +126,8 @@ int main()
 	// renderer.geometryNodes.push_back(&heightMapNode);
 
 	TreeBuilder * tbuilder = new FractalTreeBuilder();
-	Tree * tree = tbuilder->generateTree(6, 20, 
-			16.7, -33.3, 0.85, 0.85, 2, 0, 0);
+	Tree * tree = tbuilder->generateTree(9, 20, 
+			0., -0.39, 0.9, 0.8, 2.0, 0, 0);
 
 	TreeNode treeNode;
 	treeNode.init(tree);
@@ -174,7 +174,7 @@ int main()
 		previous = current;
 		glfwPollEvents();
 
-		printf("FPS: %lf\n", 1/elapsed);
+		//printf("FPS: %lf\n", 1/elapsed);
 		while(lag >= fps){
 			for(int i = 0; i < input_controllers.size(); i++){
 				input_controllers[i]->update();

@@ -19,7 +19,7 @@ namespace amaze{
 
 
 	
-		unsigned int MAXDEPTH;
+		unsigned int MAXDEPTH, numNodes;
 		float trunkLength, theta, phi, R1, R2, radius;
 		glm::vec3 * branchNodes;
 	};

@@ -4,6 +4,7 @@
 
 #include <TreeGeom/Tree.hpp>
 #include <math.h>
+#include <stdio.h>
 
 namespace amaze{
 
@@ -15,8 +16,11 @@ namespace amaze{
 		R1 = r1;
 		R2 = r2;
 		radius = _radius;
+		numNodes = (int) (pow(2.0,(float)MAXDEPTH));
 
-		branchNodes = new glm::vec3[ (int) (pow(2.0,(float)MAXDEPTH))];
+		branchNodes = new glm::vec3[numNodes];
+		
+
 	}
 	Tree::~Tree(){
 		delete[] branchNodes;

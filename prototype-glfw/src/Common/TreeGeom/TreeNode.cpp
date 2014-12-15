@@ -1,6 +1,6 @@
 
 
-
+#include <stdio.h>
 
 #include <TreeGeom/TreeNode.hpp>
 #include <Core/GL/OpenGL.hpp>
@@ -20,12 +20,15 @@ namespace amaze{
 		std::vector<int> indices;
 
 		glm::vec3 * branchNodes = tree->branchNodes;
+		float radius = tree->radius;
+		float twigging = 0.7*(1.0-pow(2,-1*(float)tree->MAXDEPTH));
+
 		{
 			//make trunk
 			glm::vec3 curr = branchNodes[0];
 			glm::vec3 next = branchNodes[1];
 			glm::vec3 axis1 = glm::normalize(next - curr);
-			glm::vec3 axis2 = glm::vec3(0,float(-1)*axis1.z,axis1.y);
+			glm::vec3 axis2 = glm::normalize(glm::vec3(0,float(-1)*axis1.z,axis1.y));
 			glm::vec3 axis3 = glm::cross(axis1,axis2);
 			//generate vertices
 			int subdivisions = 20;
@@ -33,7 +36,7 @@ namespace amaze{
 				float angle = 2*PI*((float)i/(float) subdivisions);
 				//bottom
 				glm::vec3 norm = float(cos(angle))*axis2 + float(sin(angle))*axis3;
-				glm::vec3 point1 = float(cos(angle))*axis2 + float(sin(angle))*axis3 + curr;
+				glm::vec3 point1 = (float(cos(angle))*axis2 + float(sin(angle))*axis3)*radius + curr;
 				vertices.push_back(point1.x);
 				vertices.push_back(point1.y);
 				vertices.push_back(point1.z);
@@ -42,7 +45,7 @@ namespace amaze{
 				vertices.push_back(norm.z);
 
 				//top
-				glm::vec3 point2 = float(cos(angle))*axis2 + float(sin(angle))*axis3 + next;
+				glm::vec3 point2 = (float(cos(angle))*axis2 + float(sin(angle))*axis3)*radius + next;
 				vertices.push_back(point2.x);
 				vertices.push_back(point2.y);
 				vertices.push_back(point2.z);
@@ -66,22 +69,27 @@ namespace amaze{
 
 
 			//rest of the branches
-			for(int branch=1;branch<sizeof(branchNodes)/2;branch++){
+			for(int branch=1;branch < tree->numNodes/2;branch++){
+
 				int leftI = 2*branch;
 				int rightI = leftI+1;
+
+
 				curr = branchNodes[branch];
 
 				//for the left
 				next = branchNodes[leftI];
 				axis1 = glm::normalize(next - curr);
-				axis2 = glm::vec3(0,float(-1)*axis1.z,axis1.y);
+				axis2 = glm::normalize(glm::vec3(0,float(-1)*axis1.z,axis1.y));
 				axis3 = glm::cross(axis1,axis2);
-				int start = vertices.size();
+				int start = vertices.size()/6;
 				for(int i=0;i<=subdivisions;i++){
 					float angle = 2*PI*((float)i/(float) subdivisions);
 					//bottom
 					glm::vec3 norm = float(cos(angle))*axis2 + float(sin(angle))*axis3;
-					glm::vec3 point1 = float(cos(angle))*axis2 + float(sin(angle))*axis3 + curr;
+
+					glm::vec3 point1 = (float(cos(angle))*axis2 + float(sin(angle))*axis3 )
+										*radius*(float)pow(twigging,floor(log2(branch)))+ curr;
 					vertices.push_back(point1.x);
 					vertices.push_back(point1.y);
 					vertices.push_back(point1.z);
@@ -89,7 +97,8 @@ namespace amaze{
 					vertices.push_back(norm.y);
 					vertices.push_back(norm.z);
 					//top
-					glm::vec3 point2 = float(cos(angle))*axis2 + float(sin(angle))*axis3 + next;
+					glm::vec3 point2 = (float(cos(angle))*axis2 + float(sin(angle))*axis3)*radius*(float)pow(twigging,floor(log2(branch)) + 1) + next;
+
 					vertices.push_back(point2.x);
 					vertices.push_back(point2.y);
 					vertices.push_back(point2.z);
@@ -113,15 +122,17 @@ namespace amaze{
 
 				//for the right
 				next = branchNodes[rightI];
+
 				axis1 = glm::normalize(next - curr);
 				axis2 = glm::vec3(0,float(-1)*axis1.z,axis1.y);
 				axis3 = glm::cross(axis1,axis2);
-				start = vertices.size();
+				start = vertices.size()/6;
 				for(int i=0;i<=subdivisions;i++){
 					float angle = 2*PI*((float)i/(float) subdivisions);
 					//bottom
 					glm::vec3 norm = float(cos(angle))*axis2 + float(sin(angle))*axis3;
-					glm::vec3 point1 = float(cos(angle))*axis2 + float(sin(angle))*axis3 + curr;
+					glm::vec3 point1 = (float(cos(angle))*axis2 + float(sin(angle))*axis3 )
+										*radius*(float)pow(twigging,floor(log2(branch)))+ curr;
 					vertices.push_back(point1.x);
 					vertices.push_back(point1.y);
 					vertices.push_back(point1.z);
@@ -129,7 +140,7 @@ namespace amaze{
 					vertices.push_back(norm.y);
 					vertices.push_back(norm.z);
 					//top
-					glm::vec3 point2 = float(cos(angle))*axis2 + float(sin(angle))*axis3 + next;
+					glm::vec3 point2 = (float(cos(angle))*axis2 + float(sin(angle))*axis3)*radius*(float)pow(twigging,floor(log2(branch)) + 1) + next;
 					vertices.push_back(point2.x);
 					vertices.push_back(point2.y);
 					vertices.push_back(point2.z);
@@ -197,8 +208,8 @@ namespace amaze{
 			glBindVertexArray(vao);
 			materialShader.use();
 			glEnableVertexAttribArray(materialShader["position"]);
-			glVertexAttribPointer(materialShader["position"], 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), 0);
-			glVertexAttribPointer(materialShader["normal"], 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void *) (3*sizeof(float)));
+			glVertexAttribPointer(materialShader["position"], 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), 0);
+			glVertexAttribPointer(materialShader["normal"], 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void *) (3*sizeof(float)));
 
 			materialShader.unUse();
 			glBindVertexArray(0);
